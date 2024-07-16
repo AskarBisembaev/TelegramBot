@@ -1,2 +1,2 @@
 ﻿# TelegramBot
-- [openapi.yaml](./openapi.yaml) - Этот файл содержит пример документа.
+- [openapi.yaml](./openapi.yaml) - Документация API
