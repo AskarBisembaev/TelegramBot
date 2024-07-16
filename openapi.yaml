@@ -1,0 +1,141 @@
+openapi: 3.0.0
+info:
+  title: Healthcare Appointment System API
+  version: 1.0.0
+paths:
+  /register:
+    post:
+      summary: Регистрация пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '201':
+          description: Пользователь зарегистрирован успешно
+        '400':
+          description: Ошибка валидации
+
+  /doctors:
+    get:
+      summary: Вывод списка врачей и свободных слотов
+      responses:
+        '200':
+          description: Список врачей и свободных слотов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    doctor_id:
+                      type: string
+                    name:
+                      type: string
+                    specialty:
+                      type: string
+                    available_slots:
+                      type: array
+                      items:
+                        type: string
+        '400':
+          description: Ошибка запроса
+
+  /appointments:
+    post:
+      summary: Запись на прием к врачу
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                doctor_id:
+                  type: string
+                slot:
+                  type: string
+              required:
+                - doctor_id
+                - slot
+      responses:
+        '201':
+          description: Запись на прием успешно создана
+        '400':
+          description: Ошибка валидации
+    get:
+      summary: Вывод списка моих записей
+      responses:
+        '200':
+          description: Список записей пользователя
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    appointment_id:
+                      type: string
+                    doctor_id:
+                      type: string
+                    doctor_name:
+                      type: string
+                    slot:
+                      type: string
+        '400':
+          description: Ошибка запроса
+
+  /appointments/{appointmentId}/reschedule:
+    put:
+      summary: Перенос записи на прием к врачу не позднее чем за 2 дня до приема
+      parameters:
+        - name: appointmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                new_slot:
+                  type: string
+              required:
+                - new_slot
+      responses:
+        '200':
+          description: Запись успешно перенесена
+        '400':
+          description: Ошибка валидации
+        '403':
+          description: Запрещено переносить запись позже чем за 2 дня до приема
+
+  /appointments/{appointmentId}/cancel:
+    delete:
+      summary: Отмена записи пользователем
+      parameters:
+        - name: appointmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Запись успешно отменена
+        '400':
+          description: Ошибка запроса
